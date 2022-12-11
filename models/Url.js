@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const utility = require('../utility.js');
 
 const UrlSchema = new mongoose.Schema({
    full: {
@@ -17,8 +17,9 @@ const UrlSchema = new mongoose.Schema({
    },
    date: { 
       type: String,
-      default: Date.now
+      required: true,
+      default: utility.time_now()
    }
 });
 
-module.exports = mongoose.model('Url', UrlSchema);
+module.exports = mongoose.model('Url', UrlSchema); 

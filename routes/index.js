@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const config = require('config');
 const Url = require('../models/Url');
 
 // take in form data
@@ -12,10 +11,7 @@ router.get('/', (req, res) => {
 // @desc      Redirect to long/original URL
 router.get('/:code', async (req, res) => {
    try {
-      const baseUrl = config.get('baseUrl');
-      const urlCode = req.params.code;
-      const shortUrl = baseUrl + '/' + urlCode;
-      const url = await Url.findOne({ short: shortUrl });
+      const url = await Url.findOne({ short: req.params.code });
 
       if (url) {
          url.clicks++;
@@ -26,7 +22,7 @@ router.get('/:code', async (req, res) => {
       }
    } catch (err) {
       console.error(err);
-      res.status(500).json('Server error');
+      res.status(500).json('Server error while searching for short id');
    }
 });
 

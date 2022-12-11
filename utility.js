@@ -32,7 +32,13 @@ const base62_decode = str => {
    return num;
 };
 
+const time_now = () => {
+   let date = new Date();
+   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+};
+
 module.exports = {
    base62_decode: base62_decode,
-   base62_encode: base62_encode
+   base62_encode: base62_encode,
+   time_now: time_now,
 };

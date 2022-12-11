@@ -1,16 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const validUrl = require('valid-url');
-const config = require('config');
 const Url = require('../models/Url');
 const counterModel = require('../models/counter');
-const encoder = require('../base62.js');
+const utility = require('../utility.js');
 
 // @route     POST /api/shorten
 // @desc      Create short URL
 router.post('/shorten', async (req, res) => {
    const { fullUrl} = req.body;
-   const baseUrl = config.get('baseUrl');
 
    // Check long url
    if (validUrl.isUri(fullUrl)) {
@@ -27,12 +25,11 @@ router.post('/shorten', async (req, res) => {
                cnt.save();
 
                // Create url code
-               const urlCode = encoder.base62_encode(cnt.counter);
-               const shortUrl = baseUrl + '/' + urlCode;
+               const urlCode = utility.base62_encode(cnt.counter);
                try {
                   await Url.create({
                      full: fullUrl,
-                     short: shortUrl,
+                     short: urlCode,
                   });
    
                   res.redirect('/');
@@ -57,8 +54,6 @@ router.post('/shorten', async (req, res) => {
 // handle custom urls.
 router.post('/custom', async (req, res) => {
    const {fullUrl, shortId} = req.body;
-   const baseUrl = config.get('baseUrl');
-   const customUrl = baseUrl + '/' + shortId;
 
    if (shortId.length <= 6) {
       res.status(401).json('Please enter a custom Id with length greater than or equal to seven and try again!');
@@ -67,14 +62,15 @@ router.post('/custom', async (req, res) => {
          let url = await Url.findOne({ full: fullUrl });
          if (url) {
             url.clicks = 0; // reset clicks
-            url.short = customUrl;
+            url.short = shortId;
+            url.date = utility.time_now();
             url.save();
             res.redirect('/');
          } else {
             try {
                await Url.create({
                   full: fullUrl,
-                  short: customUrl,
+                  short: shortId,
                });
 
                res.redirect('/');
