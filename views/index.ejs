@@ -13,10 +13,12 @@
 <body>
    <div class="container">
       <h1>URL Shortener</h1>
-      <form action="/api/shorten" method="POST" class="my-4 form-inline">
+      <form method="POST" class="my-4 form-inline">
          <label for="fullUrl" class="sr-only">Url</label>
          <input required placeholder="Url" type="url" name="fullUrl" id="fullUrl" class="form-control col mr-2">
-         <button class="btn btn-success" type="submit">Shrink</button>
+         <button class="btn btn-success" type="submit" formaction="/api/shorten">Shrink</button>
+         <input placeholder="Custom url" type="text" name="shortId" id="shortId" class="form-control col mr-2">
+         <button class="btn btn-success" type="submit" formaction="/api/custom">Convert</button>
       </form>
    </div>
 </body>
