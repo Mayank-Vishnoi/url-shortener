@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const validUrl = require('valid-url');
+const validUrl = require('validator');
 const Url = require('../models/Url');
 const counterModel = require('../models/counter');
 const utility = require('../utility.js');
@@ -11,7 +11,7 @@ router.post('/shorten', async (req, res) => {
    const { fullUrl} = req.body;
 
    // Check long url
-   if (validUrl.isUri(fullUrl)) {
+   if (validUrl.isURL(fullUrl)) {
       try {
          let url = await Url.findOne({ full: fullUrl }); // unique for each user
 
@@ -57,7 +57,7 @@ router.post('/custom', async (req, res) => {
 
    if (shortId.length <= 6) {
       res.status(401).json('Please enter a custom Id with length greater than or equal to seven and try again!');
-   } else if (validUrl.isUri(fullUrl)) {
+   } else if (validUrl.isURL(fullUrl)) {
       try {
          let url = await Url.findOne({ full: fullUrl });
          if (url) {
