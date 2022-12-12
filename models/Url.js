@@ -15,7 +15,7 @@ const UrlSchema = new mongoose.Schema({
       required: true,
       default: 0
    },
-   date: { 
+   time: { 
       type: String,
       required: true,
       default: utility.time_now()
