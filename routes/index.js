@@ -23,13 +23,18 @@ router.get('/', checkAuthentication, (req, res) => {
 });
 
 
-// // You can use the middleware function to check whether a user is logged in before requesting this data
-// router.post('/view', checkAuthentication, (req, res) => {
-//    // fill in the details, send them to render
-//    res.render('../views/history.ejs', {
-//       username: req.user.username
-//    });
-// });
+// You can use the middleware function to check whether a user is logged in before requesting this data
+router.get('/view', checkAuthentication, async (req, res) => {
+   // fill in the details, send them to render
+   try {
+      const urls = await Url.find({username: req.user.username});
+      res.render('../views/history.ejs', {
+         urls: urls
+      });
+   } catch (err) {
+      res.status(500).json('Server error while fetching user docs');
+   }
+});
 
 
 // @route     GET /:code
