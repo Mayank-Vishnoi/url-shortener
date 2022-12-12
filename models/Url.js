@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const utility = require('../utility.js');
 
 const UrlSchema = new mongoose.Schema({
+   username: {
+      type: String,
+      required: true
+   },
    full: {
       type: String,
       required: true

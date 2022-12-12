@@ -8,12 +8,12 @@ const utility = require('../utility.js');
 // @route     POST /api/shorten
 // @desc      Create short URL
 router.post('/shorten', async (req, res) => {
-   const { fullUrl} = req.body;
+   const { fullUrl, username} = req.body;
 
    // Check long url
    if (validUrl.isURL(fullUrl)) {
       try {
-         let url = await Url.findOne({ full: fullUrl }); // unique for each user
+         let url = await Url.findOne({ username: username, full: fullUrl }); // unique for each user
 
          if (url) {
             // short url for this link already exists
@@ -22,12 +22,13 @@ router.post('/shorten', async (req, res) => {
             try {
                let cnt = await counterModel.findOne(); // passing no param will find the first and one and only doc from this collection
                cnt.counter++;
-               cnt.save();
+               await cnt.save();
 
                // Create url code
                const urlCode = utility.base62_encode(cnt.counter);
                try {
                   await Url.create({
+                     username: username,
                      full: fullUrl,
                      short: urlCode,
                   });
@@ -53,22 +54,23 @@ router.post('/shorten', async (req, res) => {
 
 // handle custom urls.
 router.post('/custom', async (req, res) => {
-   const {fullUrl, shortId} = req.body;
+   const {fullUrl, shortId, username} = req.body;
 
    if (shortId.length <= 6) {
       res.status(401).json('Please enter a custom Id with length greater than or equal to seven and try again!');
    } else if (validUrl.isURL(fullUrl)) {
       try {
-         let url = await Url.findOne({ full: fullUrl });
+         let url = await Url.findOne({ username: username, full: fullUrl });
          if (url) {
             url.clicks = 0; // reset clicks
             url.short = shortId;
             url.date = utility.time_now();
-            url.save();
+            await url.save();
             res.redirect('/');
          } else {
             try {
                await Url.create({
+                  username: username,
                   full: fullUrl,
                   short: shortId,
                });
