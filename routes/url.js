@@ -62,7 +62,7 @@ router.post('/custom', async (req, res) => {
    } else if (validUrl.isURL(fullUrl)) {
       // Custom URLs should not be repeated.
       try {
-         let url = await Url.find({short: shortId});
+         let url = await Url.findOne({short: shortId});
          if (url) {
             res.status(400).json('This custom URL is not available. Please try another one.');
          } else {
