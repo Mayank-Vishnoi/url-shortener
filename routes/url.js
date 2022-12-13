@@ -4,6 +4,7 @@ const validUrl = require('validator');
 const Url = require('../models/Url');
 const counterModel = require('../models/counter');
 const utility = require('../utility.js');
+require('dotenv').config();
 
 // @route     POST /api/shorten
 // @desc      Create short URL
@@ -14,10 +15,8 @@ router.post('/shorten', async (req, res) => {
    if (validUrl.isURL(fullUrl)) {
       try {
          let url = await Url.findOne({ username: username, full: fullUrl }); // unique for each user
-
          if (url) {
-            // short url for this link already exists
-            res.json(url);
+            res.json(`Short ID for this link already exists: ${url.short}`);
          } else {
             try {
                let cnt = await counterModel.findOne(); // passing no param will find the first and one and only doc from this collection
@@ -33,7 +32,7 @@ router.post('/shorten', async (req, res) => {
                      short: urlCode,
                   });
    
-                  res.redirect('/');
+                  res.redirect('/api/gen/?short=' + urlCode);
                } catch (err) {
                   res.status(500).json('Server error while adding a document to URLs.');
                }
@@ -73,7 +72,7 @@ router.post('/custom', async (req, res) => {
                   url.short = shortId;
                   url.time = utility.time_now();
                   await url.save();
-                  res.redirect('/');
+                  res.redirect('/api/gen/?short=' + shortId);
                } else {
                   try {
                      await Url.create({
@@ -82,7 +81,7 @@ router.post('/custom', async (req, res) => {
                         short: shortId,
                      });
       
-                     res.redirect('/');
+                     res.redirect('/api/gen/?short=' + shortId);
                   } catch (err) {
                      res.status(500).json('Server error while adding a document to urls');
                   }
@@ -98,6 +97,16 @@ router.post('/custom', async (req, res) => {
    } else {
       res.status(401).json('Invalid long URL.');
    }
+});
+
+
+// to look at the just generated link
+router.get('/gen', (req, res) => {
+   const shortId = req.query.short;
+   const link = String(process.env.baseURL) + shortId;
+   res.render('../views/gen.ejs', {
+      link: link
+   });
 });
 
 module.exports = router;

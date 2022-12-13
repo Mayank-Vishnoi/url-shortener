@@ -14,21 +14,29 @@
    <div class="container">
       <h1>URL Shortener</h1>
       <form method="POST" class="my-4 form-inline">
-         <label for="fullUrl" class="sr-only">Url</label>
-         <input required placeholder="Url" type="url" name="fullUrl" id="fullUrl" class="form-control col mr-2">
          <!-- Send the username along with form body -->
          <input type="hidden" name="username" value= "<%= username %>"/>
-         <button class="btn btn-success" type="submit" formaction="/api/shorten">Shrink</button>
-         <input placeholder="Custom url" type="text" name="shortId" id="shortId" class="form-control col mr-2">
-         <button class="btn btn-success" type="submit" formaction="/api/custom">Convert</button>
+         <div class="container">
+            <label for="fullUrl" class="sr-only">Url</label>
+            <input required placeholder="Url" type="url" name="fullUrl" id="fullUrl" class="form-control col mr-2">
+            <button class="btn btn-success" type="submit" formaction="/api/shorten">Shrink</button>
+         </div>
+         <div class="container"><p></p></div>
+         <div class="container">
+            <label for="shortId" class="sr-only">Custom</label>
+            <input placeholder="Custom url" type="text" name="shortId" id="shortId" class="form-control col mr-2">
+            <button class="btn btn-success" type="submit" formaction="/api/custom">Convert</button>
+         </div>
       </form>
+      <div class="container">
+         <form action="/view" method="GET" class="my-4 form-inline">
+            <button class="btn btn-success" type="submit"> View History </button>
+         </form>
+      </div>
+      <div class="container">
+         <a href="/users/logout">LOGOUT</a>
+      </div>
    </div>
-   <div>
-      <form action="/view" method="GET" class="my-4 form-inline">
-         <button class="btn btn-success" type="submit"> View History </button>
-      </form>
-   </div>
-   <a href="/users/logout">LOGOUT</a>
 </body>
 
 </html>

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Url = require('../models/Url');
-
+require('dotenv').config();
 
 // Middleware to check if the user requesting this route is authenticated
 const checkAuthentication = (req, res, next) => {
@@ -29,8 +29,10 @@ router.get('/view', checkAuthentication, async (req, res) => {
    // fill in the details, send them to render
    try {
       const urls = await Url.find({username: req.user.username});
+      const baseLink = String(process.env.baseURL);
       res.render('../views/history.ejs', {
-         urls: urls
+         urls: urls,
+         baseLink: baseLink
       });
    } catch (err) {
       res.status(500).json('There was a server error while fetching user documents.');

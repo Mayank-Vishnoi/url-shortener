@@ -11,7 +11,7 @@
 </head>
 
 <body>
-   <table class="table-striped table-responsive">
+   <table class="table-striped table-responsive ml-3 mr-3">
       <thead>
          <tr>
             <th>Full URL</th>
@@ -20,14 +20,14 @@
             <th>Time Created</th> 
          </tr> 
       </thead >
-      <tbody >
+      <tbody class="ml-3 mr-3">
          <% urls.forEach(url=> { %>
             <tr>
                <td>
                   <%= url.full %>
                </td>
                <td>
-                  <%= url.short %>
+                  <%= String(baseLink + url.short) %>
                </td>
                <td>
                   <%= url.clicks %>
