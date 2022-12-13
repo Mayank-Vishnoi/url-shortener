@@ -10,6 +10,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
+
+// EJS setup
 app.set('view engine', 'ejs');
 
 
@@ -22,6 +24,7 @@ app.use((req, res, next) => {
    next();
 });
 
+
 // Passport Setup
 const passport = require('passport');
 require('./config/passport')(passport);
@@ -31,6 +34,7 @@ app.use(passport.session());
 
 // Authentication Routes
 app.use('/users', require('./routes/users'));
+
 
 // Services routes
 app.use('/', require('./routes/index'));

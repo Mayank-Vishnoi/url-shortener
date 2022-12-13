@@ -5,11 +5,6 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 
 
-router.get('/', (req, res) => {
-   res.redirect('/users/login');
-});
-
-
 // register
 router.get('/register', (req, res) => {
    res.render('../views/register.ejs');
@@ -45,7 +40,7 @@ router.post('/register', async (req, res) => {
          }
       }
    } catch (e) {
-      res.status(500).json('Server error while checking for username in db');
+      res.status(500).json('There was a server error while checking for the username in the database.');
    }
 });   
 

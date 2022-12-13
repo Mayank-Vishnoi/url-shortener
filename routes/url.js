@@ -35,29 +35,30 @@ router.post('/shorten', async (req, res) => {
    
                   res.redirect('/');
                } catch (err) {
-                  res.status(500).json('Server error while adding a document to urls');
+                  res.status(500).json('Server error while adding a document to URLs.');
                }
             } catch (err) {
                console.error(err);
-               res.status(500).json('Server error while accessing counter variable');
+               res.status(500).json('Server error while accessing counter variable.');
             }
          }
       } catch (err) {
          console.error(err);
-         res.status(500).json('Server error while accessing long url');
+         res.status(500).json('Server error while accessing long URL.');
       }
    } else {
-      res.status(401).json('Invalid long url');
+      res.status(401).json('Invalid long URL.');
    }
 });
 
 
-// handle custom urls.
+// @route     POST /api/custom
+// @desc      Create custom short ID
 router.post('/custom', async (req, res) => {
    const {fullUrl, shortId, username} = req.body;
 
    if (shortId.length <= 6) {
-      res.status(401).json('Please enter a custom Id with length greater than or equal to seven and try again!');
+      res.status(401).json('Please enter a custom ID with a length of at least seven characters and try again.');
    } else if (validUrl.isURL(fullUrl)) {
       try {
          let url = await Url.findOne({ username: username, full: fullUrl });
@@ -82,10 +83,10 @@ router.post('/custom', async (req, res) => {
          }
       } catch (err) {
          console.error(err);
-         res.status(500).json('Server error while accessing long url');
+         res.status(500).json('Server error while accessing long URL.');
       }
    } else {
-      res.status(401).json('Invalid long url');
+      res.status(401).json('Invalid long URL.');
    }
 });
 

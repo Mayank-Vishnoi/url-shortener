@@ -1,6 +1,6 @@
 // Converts an integer to a string of length 6 using base 62 encoding.
 const base62_encode = num => {
-   
+
    const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
    if (num === 0) return "000000";
@@ -12,12 +12,13 @@ const base62_encode = num => {
       encoded = `${alphabet[remainder]}${encoded}`; // add remainder to beginning of result string.  
       num = Math.floor(num / 62); // divide number by 62 and assign it back to itself (integer division).
    }
-
+   
    return `${"0".repeat(6 - encoded.length)}${encoded}`;
 };
 
 
-// Converts a string of length 6 to an integer using base 62 encoding.
+// Converts a string of length 6 to an integer using base 62 encoding
+// May be used for debugging at some point
 const base62_decode = str => {
    
    const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';

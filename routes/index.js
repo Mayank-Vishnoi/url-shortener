@@ -3,19 +3,20 @@ const router = express.Router();
 const Url = require('../models/Url');
 
 
-// Middleware to check if a user whose requesting this route is authenticated
+// Middleware to check if the user requesting this route is authenticated
 const checkAuthentication = (req, res, next) => {
    if (req.isAuthenticated()) {
       next();
    } else {
-      req.flash('error', 'You Have to be Logged in to avail this service');
+      req.flash('error', 'You have to be logged in to avail of this service.');
       res.redirect('/users/login');
    }
 };
 
 
-// take in form data
-// Note that authentication would fail once you restart your server
+// @route     GET /:code
+// @desc     take in form data
+// Note that authentication will fail when you restart your server.
 router.get('/', checkAuthentication, (req, res) => {
    res.render('../views/index.ejs', {
       username: req.user.username
@@ -32,7 +33,7 @@ router.get('/view', checkAuthentication, async (req, res) => {
          urls: urls
       });
    } catch (err) {
-      res.status(500).json('Server error while fetching user docs');
+      res.status(500).json('There was a server error while fetching user documents.');
    }
 });
 
@@ -49,11 +50,11 @@ router.get('/:code', async (req, res) => {
          await url.save();
          res.redirect(url.full);
       } else {
-         res.status(404).json('No such url was found');
+         res.status(404).json('No such url was found.');
       }
    } catch (err) {
       console.error(err);
-      res.status(500).json('Server error while searching for short id');
+      res.status(500).json('There was a server error while searching for the short ID.');
    }
 });
 
