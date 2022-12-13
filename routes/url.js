@@ -71,7 +71,7 @@ router.post('/custom', async (req, res) => {
                if (url) {
                   url.clicks = 0; // reset clicks
                   url.short = shortId;
-                  url.date = utility.time_now();
+                  url.time = utility.time_now();
                   await url.save();
                   res.redirect('/');
                } else {
