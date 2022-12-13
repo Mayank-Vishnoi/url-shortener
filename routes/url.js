@@ -60,30 +60,40 @@ router.post('/custom', async (req, res) => {
    if (shortId.length <= 6) {
       res.status(401).json('Please enter a custom ID with a length of at least seven characters and try again.');
    } else if (validUrl.isURL(fullUrl)) {
+      // Custom URLs should not be repeated.
       try {
-         let url = await Url.findOne({ username: username, full: fullUrl });
+         let url = await Url.find({short: shortId});
          if (url) {
-            url.clicks = 0; // reset clicks
-            url.short = shortId;
-            url.date = utility.time_now();
-            await url.save();
-            res.redirect('/');
+            res.status(400).json('This custom URL is not available. Please try another one.');
          } else {
             try {
-               await Url.create({
-                  username: username,
-                  full: fullUrl,
-                  short: shortId,
-               });
-
-               res.redirect('/');
+               let url = await Url.findOne({ username: username, full: fullUrl });
+               if (url) {
+                  url.clicks = 0; // reset clicks
+                  url.short = shortId;
+                  url.date = utility.time_now();
+                  await url.save();
+                  res.redirect('/');
+               } else {
+                  try {
+                     await Url.create({
+                        username: username,
+                        full: fullUrl,
+                        short: shortId,
+                     });
+      
+                     res.redirect('/');
+                  } catch (err) {
+                     res.status(500).json('Server error while adding a document to urls');
+                  }
+               }
             } catch (err) {
-               res.status(500).json('Server error while adding a document to urls');
+               console.error(err);
+               res.status(500).json('Server error while accessing long URL');
             }
          }
       } catch (err) {
-         console.error(err);
-         res.status(500).json('Server error while accessing long URL.');
+         res.status(500).json('Server error while accessing short URL');
       }
    } else {
       res.status(401).json('Invalid long URL.');

@@ -35,7 +35,11 @@ const base62_decode = str => {
 
 const time_now = () => {
    let date = new Date();
-   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+
+   // Offset time by 5.5 hours (in milliseconds) for IST from GMT
+   let offsetTime = date.getTime() + 19800000;
+
+   return `${new Date(offsetTime).getDate()}/${new Date(offsetTime).getMonth() + 1}/${new Date(offsetTime).getFullYear()} ${new Date(offsetTime).getHours()}:${new Date(offsetTime).getMinutes()}:${new Date(offsetTime).getSeconds()}`;
 };
 
 module.exports = {
