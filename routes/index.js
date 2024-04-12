@@ -8,7 +8,7 @@ const checkAuthentication = (req, res, next) => {
    if (req.isAuthenticated()) {
       next();
    } else {
-      req.flash('error', 'You have to be logged in to avail of this service.');
+      req.flash('error', 'You have to be logged in to avail this service.');
       res.redirect('/users/login');
    }
 };
