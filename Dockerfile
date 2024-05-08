@@ -16,8 +16,7 @@ COPY . .
 # Expose the port your app runs on
 EXPOSE 5000
 
-# Command to run your application
-CMD ["node", "server.js"]
+ENV NODE_ENV = production
 
-# docker build -t url-shortener .
-# docker run -p 5000:5000 -d url-shortener
+# Command to run your application
+CMD ["npm", "run", "start"]
