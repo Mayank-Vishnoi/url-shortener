@@ -100,7 +100,8 @@ router.post('/custom', async (req, res) => {
 });
 
 
-// to look at the just generated link
+// @route     GET /api/gen
+// @desc      Helper api, displaying the generated shortened URL
 router.get('/gen', (req, res) => {
    const shortId = req.query.short;
    const link = String(process.env.baseURL) + shortId;

@@ -2,16 +2,20 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/UserModel');
 const bcrypt = require('bcrypt');
-const passport = require('passport');
+const { v4: uuidv4 } = require('uuid');
+const {setUser} = require('../service/auth');
+const { checkAuthentication } = require('../middleware/auth');
 
 
-// register
+// @route GET /users/register
+// @desc Registration page
 router.get('/register', (req, res) => {
    res.render('../views/register.ejs');
 });
 
 
-// register post
+// @route POST /users/register
+// @desc Register a new user
 router.post('/register', async (req, res) => {
    async function foundDuplicate(name) {
       const duplicate = await User.findOne({ username: name });
@@ -45,29 +49,63 @@ router.post('/register', async (req, res) => {
 });   
 
 
-// Login
-router.get('/login', (req, res) => {
+// @route GET /users/login
+// @desc Login page
+router.get('/login', checkAuthentication, (req, res) => {
+   if (req.user) {
+      req.flash('success', 'You are already logged in');
+      return res.redirect('/');
+   }
    res.render('../views/login.ejs');
 });
 
 
-// login POST
-router.post('/login', (req, res) => {
-   req.flash('error', 'Invalid credentials');
-   passport.authenticate('local', {
-      successFlash: true,
-      successRedirect: '/',
-      failureRedirect: '/users/login',
-      failureFlash: true
-   })(req, res); 
+// @route POST /users/login
+// @desc Login user
+router.post('/login', async (req, res) => {
+   username = req.body.username;
+   password = req.body.password;
+   // Check if user exists in db       
+   await User.findOne({ username }).then((user) => {
+      // If no user found return error             
+      if (!user) {
+         req.flash('error', 'Invalid username');
+         return res.redirect('/users/login');
+      }
+      // Compare passwords             
+      bcrypt.compare(password, user.password)
+         .then((isMatch) => {
+            // If passwords don't match return error          
+            if (!isMatch) {
+               req.flash('error', 'Invalid password');
+               return res.redirect('/users/login');
+            }
+
+            // Store user in session
+            const sessionId = uuidv4();
+            setUser(sessionId, user);
+            // req.session.userId = sessionId;
+            res.cookie('uid', sessionId);
+
+            // Return authenticated user
+            req.flash('success', 'You are now logged in');       
+            return res.redirect('/');
+         });
+   });
 });
 
 
-// Logout 
-router.get('/logout', (req, res) => {
-   req.isAuthenticated();
-   req.flash('success', 'You are now logged Out');
-   res.redirect('/users/login');
+// @route GET /users/logout
+// @desc Logout user
+router.get('/logout', checkAuthentication, (req, res) => {
+   if (!req.user) {
+      req.flash('success', 'You are already logged out');
+   } else {
+      res.clearCookie('uid');
+      req.flash('success', 'You are now logged out');
+   }
+   return res.redirect('/users/login');
 });
+
 
 module.exports = router;

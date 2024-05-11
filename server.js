@@ -1,5 +1,7 @@
 const express = require('express');
 const connectDB = require('./config/db');
+const cookieParser = require("cookie-parser");
+const { restrictAccess, checkAuthentication } = require('./middleware/auth');
 
 if (process.env.NODE_ENV !== 'production') {
    require('dotenv').config();
@@ -28,20 +30,14 @@ app.use((req, res, next) => {
 });
 
 
-// Passport Setup
-const passport = require('passport');
-require('./config/passport')(passport);
-app.use(passport.initialize());
-app.use(passport.session());
-
-
 // Authentication Routes
+app.use(cookieParser());
 app.use('/users', require('./routes/users'));
 
 
 // Services routes
 app.use('/', require('./routes/index'));
-app.use('/api', require('./routes/url'));
+app.use('/api', restrictAccess, require('./routes/url'));
 
 
 app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));

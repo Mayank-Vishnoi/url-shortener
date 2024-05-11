@@ -1,32 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const Url = require('../models/Url');
+const { restrictAccess } = require('../middleware/auth');
 require('dotenv').config();
-
-// Middleware to check if the user requesting this route is authenticated
-const checkAuthentication = (req, res, next) => {
-   if (req.isAuthenticated()) {
-      next();
-   } else {
-      req.flash('error', 'You have to be logged in to avail this service.');
-      res.redirect('/users/login');
-   }
-};
 
 
 // @route     GET /:code
 // @desc     take in form data
-// Note that authentication will fail when you restart your server.
-router.get('/', checkAuthentication, (req, res) => {
+router.get('/', restrictAccess, (req, res) => {
+   // Note that authentication will fail when you restart your server because the session is cleared.
    res.render('../views/index.ejs', {
       username: req.user.username
    });
 });
 
 
-// You can use the middleware function to check whether a user is logged in before requesting this data
-router.get('/view', checkAuthentication, async (req, res) => {
-   // fill in the details, send them to render
+// @route     GET /view
+// @desc      View user's generated url history
+router.get('/view', restrictAccess, async (req, res) => {
+   // You can use the middleware function to check whether a user is logged in before requesting this data
    try {
       const urls = await Url.find({username: req.user.username});
       const baseLink = String(process.env.baseURL);
