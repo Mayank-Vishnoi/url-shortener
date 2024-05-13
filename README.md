@@ -1,4 +1,6 @@
 # url-shortener
+Link to access: https://truncator.cyclic.app/
+
 This is a personal project.
 Using counters and base 62 encoding to generate unique id everytime of a strict length 6.
 Allowing users to enter custom URL' but with length >= 7 as the whole point of using counter is to avoid collisions.
